@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TABLE_NAME = "notesAM";
     private static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
+
+    EditText idET, nomET, prenomET, testET, examenET, moyenneET;
+
+
     private ContentResolver contentResolver;
 
     @Override
@@ -29,6 +34,21 @@ public class MainActivity extends AppCompatActivity {
 
         contentResolver = getContentResolver();
 
+        idET = (EditText) findViewById(R.id.idET);
+        nomET = (EditText) findViewById(R.id.nomET);
+        prenomET = (EditText) findViewById(R.id.prenomET);
+        testET = (EditText) findViewById(R.id.testET);
+        examenET = (EditText) findViewById(R.id.examenET);
+        moyenneET = (EditText) findViewById(R.id.moyenneET);
+
+
+        int id = Integer.parseInt(idET.getText().toString());
+        String nom = nomET.getText().toString();
+        String prenom = prenomET.getText().toString();
+        float test = Float.parseFloat(testET.getText().toString());
+        float examen = Float.parseFloat(examenET.getText().toString());
+        float moyenne = Float.parseFloat(moyenneET.getText().toString());
+
         Button insertButton = findViewById(R.id.insert_button);
         Button queryButton = findViewById(R.id.query_button);
         Button updateButton = findViewById(R.id.update_button);
@@ -37,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         insertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertData();
+                insertData(nom, prenom, test, examen, moyenne);
             }
         });
 
@@ -51,25 +71,26 @@ public class MainActivity extends AppCompatActivity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateData();
+                updateData(id, nom, prenom, test, examen, moyenne);
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteData();
+                deleteData(id);
             }
         });
     }
 
-    private void insertData() {
+    private void insertData(String nom, String prenom, float test, float examen, float moyenne) {
+
         ContentValues values = new ContentValues();
-        values.put("nom", "Abed");
-        values.put("prenom", "Moh");
-        values.put("test", 12.5);
-        values.put("examen", 10);
-        values.put("moyenne", 11);
+        values.put("nom", nom);
+        values.put("prenom", prenom);
+        values.put("test", test);
+        values.put("examen", examen);
+        values.put("moyenne", moyenne);
 
         Uri resultUri = contentResolver.insert(CONTENT_URI, values);
 
@@ -109,17 +130,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateData() {
+    private void updateData(int id, String newNom, String newPrenom, float newTest, float newExamen, float newMoyenne) {
         ContentValues values = new ContentValues();
-        values.put("prenom", "Updated Name");
 
-        int rowsUpdated = contentResolver.update(CONTENT_URI, values, "nom = ?", new String[]{"John"});
+        values.put("nom", newNom);
+        values.put("prenom", newPrenom);
+        values.put("test", newTest);
+        values.put("examen", newExamen);
+        values.put("moyenne", newMoyenne);
+
+        int rowsUpdated = getContentResolver().update(
+                CONTENT_URI,  // Your Content Provider URI
+                values,
+                "id = ?",
+                new String[]{String.valueOf(id)}
+        );
 
         Toast.makeText(this, "Rows Updated: " + rowsUpdated, Toast.LENGTH_SHORT).show();
     }
 
-    private void deleteData() {
-        int rowsDeleted = contentResolver.delete(CONTENT_URI, "nom = ?", new String[]{"John"});
+    private void deleteData(int id) {
+        int rowsDeleted = contentResolver.delete(CONTENT_URI, "id = ?", new String[]{String.valueOf(id)});
 
         Toast.makeText(this, "Rows Deleted: " + rowsDeleted, Toast.LENGTH_SHORT).show();
     }
