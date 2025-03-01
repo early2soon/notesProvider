@@ -41,8 +41,12 @@ public class MainActivity extends AppCompatActivity {
         examenET = (EditText) findViewById(R.id.examenET);
         moyenneET = (EditText) findViewById(R.id.moyenneET);
 
-
-        int id = Integer.parseInt(idET.getText().toString());
+        int id;
+        if(idET.getText() != null) {
+            id = Integer.parseInt(idET.getText().toString());
+        } else {
+         id = 0;
+        }
         String nom = nomET.getText().toString();
         String prenom = prenomET.getText().toString();
         float test = Float.parseFloat(testET.getText().toString());
@@ -64,21 +68,55 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                queryData();
+                if (!idET.getText().toString().isEmpty()) {
+                    int id = Integer.parseInt(idET.getText().toString());
+                    String nom = nomET.getText().toString();
+                    String prenom = prenomET.getText().toString();
+                    String testText = testET.getText().toString();
+                    float test = testText.isEmpty() ? 0 : Float.parseFloat(testText);
+                    String examenText = examenET.getText().toString();
+                    float examen = examenText.isEmpty() ? 0 : Float.parseFloat(examenText);
+                    String moyenneText = moyenneET.getText().toString();
+                    float moyenne = moyenneText.isEmpty() ? 0 : Float.parseFloat(moyenneText);
+
+                    queryData();
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateData(id, nom, prenom, test, examen, moyenne);
+                if (!idET.getText().toString().trim().isEmpty()) {
+                    try {
+                        int id = Integer.parseInt(idET.getText().toString().trim());
+                        String nom = nomET.getText().toString();
+                        String prenom = prenomET.getText().toString();
+                        float test = testET.getText().toString().isEmpty() ? 0 : Float.parseFloat(testET.getText().toString());
+                        float examen = examenET.getText().toString().isEmpty() ? 0 : Float.parseFloat(examenET.getText().toString());
+                        float moyenne = moyenneET.getText().toString().isEmpty() ? 0 : Float.parseFloat(moyenneET.getText().toString());
+
+                        updateData(id, nom, prenom, test, examen, moyenne);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(MainActivity.this, "Invalid ID!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteData(id);
+                if (!idET.getText().toString().isEmpty()) {
+                    int id = Integer.parseInt(idET.getText().toString());
+                    deleteData(id);
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -110,21 +148,27 @@ public class MainActivity extends AppCompatActivity {
                 @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("_id"));
                 @SuppressLint("Range") String nom = cursor.getString(cursor.getColumnIndex("nom"));
                 @SuppressLint("Range") String prenom = cursor.getString(cursor.getColumnIndex("prenom"));
-                @SuppressLint("Range") int test = cursor.getInt(cursor.getColumnIndex("test"));
-                @SuppressLint("Range") int examen = cursor.getInt(cursor.getColumnIndex("examen"));
+                @SuppressLint("Range") double test = cursor.getDouble(cursor.getColumnIndex("test"));
+                @SuppressLint("Range") double examen = cursor.getDouble(cursor.getColumnIndex("examen"));
                 @SuppressLint("Range") double moyenne = cursor.getDouble(cursor.getColumnIndex("moyenne"));
 
-                result.append("ID: ").append(id)
+                /* result.append("ID: ").append(id)
                         .append(", Nom: ").append(nom)
                         .append(", Prenom: ").append(prenom)
                         .append(", Test: ").append(test)
                         .append(", Examen: ").append(examen)
                         .append(", Moyenne: ").append(moyenne)
-                        .append("\n");
+                        .append("\n"); */
+                idET.setText(String.valueOf(id));
+                nomET.setText(nom);
+                prenomET.setText(prenom);
+                testET.setText(String.valueOf(test));
+                examenET.setText(String.valueOf(examen));
+                moyenneET.setText(String.valueOf(moyenne));
             }
             cursor.close();
-            Toast.makeText(this, result.toString(), Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Query Result:\n" + result.toString());
+            Toast.makeText(this, "Results found!", Toast.LENGTH_LONG).show();
+            //Log.d(TAG, "Query Result:\n" + result.toString());
         } else {
             Toast.makeText(this, "No data found!", Toast.LENGTH_SHORT).show();
         }
