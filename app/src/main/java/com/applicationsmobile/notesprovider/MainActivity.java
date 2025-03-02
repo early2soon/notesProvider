@@ -41,17 +41,13 @@ public class MainActivity extends AppCompatActivity {
         examenET = (EditText) findViewById(R.id.examenET);
         moyenneET = (EditText) findViewById(R.id.moyenneET);
 
-        int id;
-        if(idET.getText() != null) {
-            id = Integer.parseInt(idET.getText().toString());
-        } else {
-         id = 0;
-        }
-        String nom = nomET.getText().toString();
-        String prenom = prenomET.getText().toString();
-        float test = Float.parseFloat(testET.getText().toString());
-        float examen = Float.parseFloat(examenET.getText().toString());
-        float moyenne = Float.parseFloat(moyenneET.getText().toString());
+        /* int id = idET.getText().toString().isEmpty() ? 0 : Integer.parseInt(idET.getText().toString());
+        String nom = nomET.getText().toString().isEmpty() ? "default_nom" : nomET.getText().toString();
+        String prenom = prenomET.getText().toString().isEmpty() ? "default_prenom" : prenomET.getText().toString();
+        float test = testET.getText().toString().isEmpty() ? 0 : Float.parseFloat(testET.getText().toString());
+        float examen = examenET.getText().toString().isEmpty() ? 0 : Float.parseFloat(examenET.getText().toString());
+        float moyenne = moyenneET.getText().toString().isEmpty() ? 0 : Float.parseFloat(moyenneET.getText().toString()); */
+
 
         Button insertButton = findViewById(R.id.insert_button);
         Button queryButton = findViewById(R.id.query_button);
@@ -61,7 +57,18 @@ public class MainActivity extends AppCompatActivity {
         insertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertData(nom, prenom, test, examen, moyenne);
+                if (!idET.getText().toString().trim().isEmpty()) {
+                    // int id = Integer.parseInt(idET.getText().toString().trim());
+                    String nom = nomET.getText().toString().trim();
+                    String prenom = prenomET.getText().toString().trim();
+                    float test = testET.getText().toString().isEmpty() ? 0 : Float.parseFloat(testET.getText().toString());
+                    float examen = examenET.getText().toString().isEmpty() ? 0 : Float.parseFloat(examenET.getText().toString());
+                    float moyenne = moyenneET.getText().toString().isEmpty() ? 0 : Float.parseFloat(moyenneET.getText().toString());
+
+                    insertData(nom, prenom, test, examen, moyenne);
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -92,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!idET.getText().toString().trim().isEmpty()) {
                     try {
                         int id = Integer.parseInt(idET.getText().toString().trim());
-                        String nom = nomET.getText().toString();
-                        String prenom = prenomET.getText().toString();
+                        String nom = nomET.getText().toString().trim();
+                        String prenom = prenomET.getText().toString().trim();
                         float test = testET.getText().toString().isEmpty() ? 0 : Float.parseFloat(testET.getText().toString());
                         float examen = examenET.getText().toString().isEmpty() ? 0 : Float.parseFloat(examenET.getText().toString());
                         float moyenne = moyenneET.getText().toString().isEmpty() ? 0 : Float.parseFloat(moyenneET.getText().toString());
@@ -113,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!idET.getText().toString().isEmpty()) {
                     int id = Integer.parseInt(idET.getText().toString());
-                    deleteData(id);
+                    deleteData();
                 } else {
                     Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
                 }
@@ -122,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertData(String nom, String prenom, float test, float examen, float moyenne) {
-
         ContentValues values = new ContentValues();
         values.put("nom", nom);
         values.put("prenom", prenom);
@@ -138,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Insert Failed!", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void queryData() {
         Cursor cursor = contentResolver.query(CONTENT_URI, new String[]{"_id", "nom", "prenom", "test", "examen", "moyenne"}, null, null, "nom ASC");
@@ -186,16 +193,20 @@ public class MainActivity extends AppCompatActivity {
         int rowsUpdated = getContentResolver().update(
                 CONTENT_URI,  // Your Content Provider URI
                 values,
-                "id = ?",
+                "_id = ?",
                 new String[]{String.valueOf(id)}
         );
 
         Toast.makeText(this, "Rows Updated: " + rowsUpdated, Toast.LENGTH_SHORT).show();
     }
 
-    private void deleteData(int id) {
-        int rowsDeleted = contentResolver.delete(CONTENT_URI, "id = ?", new String[]{String.valueOf(id)});
-
-        Toast.makeText(this, "Rows Deleted: " + rowsDeleted, Toast.LENGTH_SHORT).show();
+    private void deleteData() {
+        if (!idET.getText().toString().trim().isEmpty()) {
+            int id = Integer.parseInt(idET.getText().toString().trim());
+            int rowsDeleted = contentResolver.delete(CONTENT_URI, "_id = ?", new String[]{String.valueOf(id)});
+            Toast.makeText(this, "Rows Deleted: " + rowsDeleted, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Deletion failed!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
