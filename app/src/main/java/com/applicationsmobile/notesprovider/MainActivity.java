@@ -78,21 +78,9 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!idET.getText().toString().isEmpty()) {
-                    int id = Integer.parseInt(idET.getText().toString());
-                    String nom = nomET.getText().toString();
-                    String prenom = prenomET.getText().toString();
-                    String testText = testET.getText().toString();
-                    float test = testText.isEmpty() ? 0 : Float.parseFloat(testText);
-                    String examenText = examenET.getText().toString();
-                    float examen = examenText.isEmpty() ? 0 : Float.parseFloat(examenText);
-                    String moyenneText = moyenneET.getText().toString();
-                    float moyenne = moyenneText.isEmpty() ? 0 : Float.parseFloat(moyenneText);
-
+                
                     queryData();
-                } else {
-                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 
@@ -264,5 +252,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Deletion failed!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void RefreshToggle(View view) {
+
+        idET.setText("");
+        nomET.setText("");
+        prenomET.setText("");
+        testET.setText("");
+        examenET.setText("");
+        moyenneET.setText("");
+        Toast.makeText(this, "data cleared", Toast.LENGTH_SHORT).show();
     }
 }

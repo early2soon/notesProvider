@@ -218,5 +218,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.654" />
 
+    <Button
+        android:id="@+id/refreshBtn"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="114dp"
+        android:layout_height="48dp"
+        android:text="Refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.117"
+        android:onClick="RefreshToggle"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
