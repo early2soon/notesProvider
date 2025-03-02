@@ -78,9 +78,7 @@ public class MainActivity extends AppCompatActivity {
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
                     queryData();
-
             }
         });
 
