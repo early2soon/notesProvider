@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -166,39 +169,73 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void queryData() {
-        Cursor cursor = contentResolver.query(CONTENT_URI, new String[]{"_id", "nom", "prenom", "test", "examen", "moyenne"}, null, null, "nom ASC");
+        String idText = idET.getText().toString().trim();
+        String nom = nomET.getText().toString().trim();
+        String prenom = prenomET.getText().toString().trim();
+
+        // Ensure at least one field is entered
+        if (idText.isEmpty() && nom.isEmpty() && prenom.isEmpty()) {
+            Toast.makeText(this, "Please enter at least one search criteria!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Prepare dynamic selection
+        StringBuilder selection = new StringBuilder();
+        List<String> selectionArgsList = new ArrayList<>();
+
+        if (!idText.isEmpty()) {
+            selection.append("_id = ?");
+            selectionArgsList.add(idText);
+        }
+        if (!nom.isEmpty()) {
+            if (selection.length() > 0) selection.append(" AND ");
+            selection.append("nom = ?");
+            selectionArgsList.add(nom);
+        }
+        if (!prenom.isEmpty()) {
+            if (selection.length() > 0) selection.append(" AND ");
+            selection.append("prenom = ?");
+            selectionArgsList.add(prenom);
+        }
+
+        // Convert List to String array
+        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
+
+        Cursor cursor = contentResolver.query(
+                CONTENT_URI,
+                new String[]{"_id", "nom", "prenom", "test", "examen", "moyenne"},
+                selection.toString(),
+                selectionArgs,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("_id"));
+            @SuppressLint("Range") String nomResult = cursor.getString(cursor.getColumnIndex("nom"));
+            @SuppressLint("Range") String prenomResult = cursor.getString(cursor.getColumnIndex("prenom"));
+            @SuppressLint("Range") double test = cursor.getDouble(cursor.getColumnIndex("test"));
+            @SuppressLint("Range") double examen = cursor.getDouble(cursor.getColumnIndex("examen"));
+            @SuppressLint("Range") double moyenne = cursor.getDouble(cursor.getColumnIndex("moyenne"));
+
+            // Populate the EditText fields with retrieved values
+            idET.setText(String.valueOf(id));
+            nomET.setText(nomResult);
+            prenomET.setText(prenomResult);
+            testET.setText(String.valueOf(test));
+            examenET.setText(String.valueOf(examen));
+            moyenneET.setText(String.valueOf(moyenne));
+
+            Toast.makeText(this, "Data Found!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "No matching data found!", Toast.LENGTH_SHORT).show();
+        }
 
         if (cursor != null) {
-            StringBuilder result = new StringBuilder();
-            while (cursor.moveToNext()) {
-                @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("_id"));
-                @SuppressLint("Range") String nom = cursor.getString(cursor.getColumnIndex("nom"));
-                @SuppressLint("Range") String prenom = cursor.getString(cursor.getColumnIndex("prenom"));
-                @SuppressLint("Range") double test = cursor.getDouble(cursor.getColumnIndex("test"));
-                @SuppressLint("Range") double examen = cursor.getDouble(cursor.getColumnIndex("examen"));
-                @SuppressLint("Range") double moyenne = cursor.getDouble(cursor.getColumnIndex("moyenne"));
-
-                /* result.append("ID: ").append(id)
-                        .append(", Nom: ").append(nom)
-                        .append(", Prenom: ").append(prenom)
-                        .append(", Test: ").append(test)
-                        .append(", Examen: ").append(examen)
-                        .append(", Moyenne: ").append(moyenne)
-                        .append("\n"); */
-                idET.setText(String.valueOf(id));
-                nomET.setText(nom);
-                prenomET.setText(prenom);
-                testET.setText(String.valueOf(test));
-                examenET.setText(String.valueOf(examen));
-                moyenneET.setText(String.valueOf(moyenne));
-            }
             cursor.close();
-            Toast.makeText(this, "Results found!", Toast.LENGTH_LONG).show();
-            //Log.d(TAG, "Query Result:\n" + result.toString());
-        } else {
-            Toast.makeText(this, "No data found!", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     private void updateData(int id, String newNom, String newPrenom, float newTest, float newExamen, float newMoyenne) {
         ContentValues values = new ContentValues();
