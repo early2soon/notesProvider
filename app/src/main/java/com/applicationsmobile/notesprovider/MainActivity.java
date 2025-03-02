@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
                     insertData(id, nom, prenom, test, examen, moyenne);
                 } else {
-                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Veuillez entrer un identifiant valide!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
                         updateData(id, nom, prenom, test, examen, moyenne);
                     } catch (NumberFormatException e) {
-                        Toast.makeText(MainActivity.this, "Invalid ID!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "ID non valide!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Veuillez entrer un identifiant valide!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     int id = Integer.parseInt(idET.getText().toString());
                     deleteData();
                 } else {
-                    Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Veuillez entrer un identifiant valide!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertData(int id, String nom, String prenom, float test, float examen, float moyenne) {
         if (doesIdExist(id)) {
-            Toast.makeText(this, "ID already exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ID existe déjà!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -147,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
         Uri resultUri = contentResolver.insert(CONTENT_URI, values);
 
         if (resultUri != null) {
-            Toast.makeText(this, "Data Inserted: " + resultUri.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Données insérées: " + resultUri.toString(), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Insert Failed!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Échec de l'insertion!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Ensure at least one field is entered
         if (idText.isEmpty() && nom.isEmpty() && prenom.isEmpty()) {
-            Toast.makeText(this, "Please enter at least one search criteria!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Veuillez saisir vos informations!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -211,9 +211,9 @@ public class MainActivity extends AppCompatActivity {
             examenET.setText(String.valueOf(examen));
             moyenneET.setText(String.valueOf(moyenne));
 
-            Toast.makeText(this, "Data Found!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Données trouvées!", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "No matching data found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Pas de données correspondantes trouvées!", Toast.LENGTH_SHORT).show();
         }
 
         if (cursor != null) {
@@ -239,16 +239,16 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{String.valueOf(id)}
         );
 
-        Toast.makeText(this, "Rows Updated: " + rowsUpdated, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Lignes mises à jour!", Toast.LENGTH_SHORT).show();
     }
 
     private void deleteData() {
         if (!idET.getText().toString().trim().isEmpty()) {
             int id = Integer.parseInt(idET.getText().toString().trim());
             int rowsDeleted = contentResolver.delete(CONTENT_URI, "_id = ?", new String[]{String.valueOf(id)});
-            Toast.makeText(this, "Rows Deleted: " + rowsDeleted, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lignes supprimées!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Deletion failed!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Échec de la suppression!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -260,6 +260,6 @@ public class MainActivity extends AppCompatActivity {
         testET.setText("");
         examenET.setText("");
         moyenneET.setText("");
-        Toast.makeText(this, "data cleared", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Données effacées", Toast.LENGTH_SHORT).show();
     }
 }
