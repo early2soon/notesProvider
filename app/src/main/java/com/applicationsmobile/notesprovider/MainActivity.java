@@ -58,14 +58,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!idET.getText().toString().trim().isEmpty()) {
-                    // int id = Integer.parseInt(idET.getText().toString().trim());
+                    int id = Integer.parseInt(idET.getText().toString().trim());
                     String nom = nomET.getText().toString().trim();
                     String prenom = prenomET.getText().toString().trim();
                     float test = testET.getText().toString().isEmpty() ? 0 : Float.parseFloat(testET.getText().toString());
                     float examen = examenET.getText().toString().isEmpty() ? 0 : Float.parseFloat(examenET.getText().toString());
                     float moyenne = moyenneET.getText().toString().isEmpty() ? 0 : Float.parseFloat(moyenneET.getText().toString());
 
-                    insertData(nom, prenom, test, examen, moyenne);
+                    insertData(id, nom, prenom, test, examen, moyenne);
                 } else {
                     Toast.makeText(MainActivity.this, "Please enter a valid ID!", Toast.LENGTH_SHORT).show();
                 }
@@ -128,8 +128,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void insertData(String nom, String prenom, float test, float examen, float moyenne) {
+
+
+
+
+    private boolean doesIdExist(int id) {
+        Cursor cursor = contentResolver.query(CONTENT_URI, new String[]{"_id"}, "_id = ?", new String[]{String.valueOf(id)}, null);
+        boolean exists = (cursor != null && cursor.getCount() > 0);
+        if (cursor != null) {
+            cursor.close();
+        }
+        return exists;
+    }
+
+    private void insertData(int id, String nom, String prenom, float test, float examen, float moyenne) {
+        if (doesIdExist(id)) {
+            Toast.makeText(this, "ID already exists!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ContentValues values = new ContentValues();
+        values.put("_id", id);
         values.put("nom", nom);
         values.put("prenom", prenom);
         values.put("test", test);
