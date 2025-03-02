@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!--<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>-->
 
     <application
         android:allowBackup="true"
@@ -25,7 +29,10 @@
             android:authorities="com.applicationsmobile.notesprovider"
             android:name=".notesContentProvider"
             android:exported="true"
-            android:grantUriPermissions="true" />
+            android:grantUriPermissions="true">
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
+
     </application>
 
 </manifest>
