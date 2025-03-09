@@ -19,7 +19,7 @@ public class notesContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         NotesBaseHelper dbHelper = new NotesBaseHelper(getContext());
-        db = dbHelper.getReadableDatabase();  // Opens the database
+        db = dbHelper.getReadableDatabase();
         return db != null;
     }
 
@@ -43,7 +43,7 @@ public class notesContentProvider extends ContentProvider {
             }
         }
 
-        String tableName = pathSegs.get(0); // First part of URI is table name
+        String tableName = pathSegs.get(0);
 
         Cursor cursor = db.query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
 
@@ -64,7 +64,7 @@ public class notesContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         String tableName = uri.getPathSegments().get(0);
-        long id = db.insert(tableName, null, values);
+        int id = (int) db.insert(tableName, null, values);
         if (id != -1) {
             getContext().getContentResolver().notifyChange(uri, null);
             return Uri.withAppendedPath(uri, String.valueOf(id));
