@@ -39,23 +39,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayData() {
-        tableLayout.removeAllViews(); // Clear previous data before loading new
+        tableLayout.removeAllViews();
 
-        // Add table headers
         TableRow headerRow = new TableRow(this);
         String[] headers = {"_id", "nom", "prenom", "test", "examen", "moyenne"};
 
-        // Loop through each column name (header)
+
         for (String columnName : headers) {
-            // Create a TextView for the column header
+
             TextView columnHeader = createTextView(columnName, true);
 
-            // Add the header TextView to the table's header row
             headerRow.addView(columnHeader);
         }
         tableLayout.addView(headerRow);
 
-        // Fetch data from Content Provider
         ContentResolver resolver = getContentResolver();
         Uri uri = Uri.parse(CONTENT_URI);
         Cursor cursor = resolver.query(uri, null, null, null, null);
@@ -64,15 +61,13 @@ public class MainActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 TableRow row = new TableRow(this);
 
-                // Retrieve values from the database
                 @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex("_id"));
                 @SuppressLint("Range") String nom = cursor.getString(cursor.getColumnIndex("nom"));
                 @SuppressLint("Range") String prenom = cursor.getString(cursor.getColumnIndex("prenom"));
                 @SuppressLint("Range") String test = cursor.getString(cursor.getColumnIndex("test"));
                 @SuppressLint("Range") String examen = cursor.getString(cursor.getColumnIndex("examen"));
                 @SuppressLint("Range") String moyenne = cursor.getString(cursor.getColumnIndex("moyenne"));
-
-                // Add values to the table row
+                
                 row.addView(createTextView(id, false));
                 row.addView(createTextView(nom, false));
                 row.addView(createTextView(prenom, false));
